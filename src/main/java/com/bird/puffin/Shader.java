@@ -11,15 +11,13 @@ public class Shader {
 	public Shader(String vertexShaderPath, String fragmentShaderPath) {
 		
 		// compile vertex shader
-		String vertexShaderString = readPath(vertexShaderPath);
 		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShader, vertexShaderString);
+		glShaderSource(vertexShader, readPath(vertexShaderPath));
 		glCompileShader(vertexShader);
 		
 		// compile fragment shader
-		String fragmentShaderString = readPath(fragmentShaderPath);
 		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, fragmentShaderString);
+		glShaderSource(fragmentShader, readPath(fragmentShaderPath));
 		glCompileShader(fragmentShader);
 		
 		// create shader program and link

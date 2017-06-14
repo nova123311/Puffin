@@ -23,12 +23,17 @@ public class Main {
 		// triangle vertex data
 		float[] vertices = {
 				-0.5f, -0.5f, 0.0f,
+				-0.5f, 0.5f, 0.0f,
+				0.5f, 0.5f, 0.0f,
 				0.5f, -0.5f, 0.0f,
-				0.0f, 0.5f, 0.0f
+		};
+		int[] indices = {
+				0, 1, 2,
+				0, 2, 3
 		};
 		
 		// create mesh to draw
-		Mesh mesh = new Mesh(vertices);
+		Mesh mesh = new Mesh(vertices, indices);
 		
 		// main game loop
 		while (!glfwWindowShouldClose(window.getWindow())) {
