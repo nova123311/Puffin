@@ -8,8 +8,11 @@ public class Window {
 
 	public Window(int width, int height) {
 		glfwInit();
-		window = glfwCreateWindow(width, height, "Puffin", 0, 0);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		window = glfwCreateWindow(width, height, "Puffin", 0, 0);
 	}
 	
 	public long getWindow() {
