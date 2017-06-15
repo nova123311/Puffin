@@ -42,13 +42,16 @@ public class Main {
 			glfwPollEvents();
 			processInput(window.getWindow());
 			
-			// render
-			glClear(GL_COLOR_BUFFER_BIT);
+			// shader attributes
+			shader.setFloat("color", 0.0f, (float)Math.sin(glfwGetTime()), 0.0f, 1.0f);
 			shader.use();
+			
+			// render
 			mesh.render();
 			
 			// refresh display
 			glfwSwapBuffers(window.getWindow());
+			glClear(GL_COLOR_BUFFER_BIT);
 		}
 		
 		// terminate glfw after successful execution
