@@ -31,6 +31,11 @@
 		<artifactId>lwjgl-opengl</artifactId>
 	<version>${lwjgl.version}</version>
 	</dependency>
+	<dependency>
+		<groupId>org.lwjgl</groupId>
+		<artifactId>lwjgl-stb</artifactId>
+		<version>${lwjgl.version}</version>
+	</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

@@ -8,11 +8,18 @@ public class Main {
 
 	public static void main(String[] args) {
 		
+		// initialize GLFW
+		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		
 		// create window
-		Window window = new Window(800, 600);
+		Window window = new Window("Puffin", 800, 600);
 		glfwMakeContextCurrent(window.getWindow());
 		
-		// GL stuff 
+		// initialize GL context
 		createCapabilities();
 		glViewport(0, 0, 800, 600);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -25,7 +32,7 @@ public class Main {
 				-0.5f, -0.5f, 0.0f,
 				-0.5f, 0.5f, 0.0f,
 				0.5f, 0.5f, 0.0f,
-				0.5f, -0.5f, 0.0f,
+				0.5f, -0.5f, 0.0f
 		};
 		int[] indices = {
 				0, 1, 2,
@@ -35,6 +42,9 @@ public class Main {
 		// create mesh to draw
 		Mesh mesh = new Mesh(vertices, indices);
 		
+		// create texture
+		Texture texture = new Texture("src/main/resources/container.jpg");
+		
 		// main game loop
 		while (!glfwWindowShouldClose(window.getWindow())) {
 			
@@ -43,8 +53,8 @@ public class Main {
 			processInput(window.getWindow());
 			
 			// shader attributes
-			shader.setFloat("color", 0.0f, (float)Math.sin(glfwGetTime()), 0.0f, 1.0f);
 			shader.use();
+			shader.setFloat("color", 0.0f, (float)Math.sin(glfwGetTime()), 0.0f, 1.0f);
 			
 			// render
 			mesh.render();
