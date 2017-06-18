@@ -33,10 +33,12 @@ public class Mesh {
 		glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 32, 12);
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, false, 32, 24);
+		glEnableVertexAttribArray(2);
 		glBindVertexArray(0);
 	}
 }

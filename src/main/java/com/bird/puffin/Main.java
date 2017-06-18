@@ -29,10 +29,10 @@ public class Main {
 		
 		// triangle vertex data
 		float[] vertices = {
-				-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-				-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-				0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-				0.5f, -0.5f, 0.0f, 1.0f, 0.0f
+				-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+				-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+				0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+				0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f
 		};
 		int[] indices = {
 				0, 1, 2,
@@ -43,7 +43,9 @@ public class Main {
 		Mesh mesh = new Mesh(vertices, indices);
 		
 		// create texture
-		Texture texture = new Texture("src/main/resources/container.jpg");
+		Texture texture = new Texture();
+		texture.load("src/main/resources/container.jpg");
+		texture.load("src/main/resources/anime.png");
 		
 		// main game loop
 		while (!glfwWindowShouldClose(window.getWindow())) {
@@ -54,6 +56,10 @@ public class Main {
 			
 			// shader attributes
 			shader.use();
+			shader.setInt("ourTexture1", 0);
+			shader.setInt("ourTexture2", 1);
+			float time = (float)Math.abs(Math.sin(0.9 * glfwGetTime()));
+			shader.setFloat("transparency", time, time, time, time);
 			
 			// texture
 			texture.use();

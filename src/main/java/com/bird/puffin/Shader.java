@@ -25,6 +25,11 @@ public class Shader {
 		glUseProgram(program);
 	}
 	
+	public void setInt(String name, int a) {
+		int location = glGetUniformLocation(program, name);
+		glUniform1i(location, a);
+	}
+	
 	public void setFloat(String name, float a, float b, float c, float d) {
 		int location = glGetUniformLocation(program, name);
 		glUniform4f(location, a, b, c, d);
