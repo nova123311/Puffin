@@ -29,10 +29,10 @@ public class Main {
 		
 		// triangle vertex data
 		float[] vertices = {
-				-0.5f, -0.5f, 0.0f,
-				-0.5f, 0.5f, 0.0f,
-				0.5f, 0.5f, 0.0f,
-				0.5f, -0.5f, 0.0f
+				-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+				-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+				0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+				0.5f, -0.5f, 0.0f, 1.0f, 0.0f
 		};
 		int[] indices = {
 				0, 1, 2,
@@ -54,7 +54,9 @@ public class Main {
 			
 			// shader attributes
 			shader.use();
-			shader.setFloat("color", 0.0f, (float)Math.sin(glfwGetTime()), 0.0f, 1.0f);
+			
+			// texture
+			texture.use();
 			
 			// render
 			mesh.render();
