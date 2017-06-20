@@ -1,5 +1,8 @@
 package com.bird.puffin;
 
+import org.joml.Math;
+import org.joml.Matrix4f;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL.*;
@@ -58,8 +61,15 @@ public class Main {
 			shader.use();
 			shader.setInt("ourTexture1", 0);
 			shader.setInt("ourTexture2", 1);
-			float time = (float)Math.abs(Math.sin(0.9 * glfwGetTime()));
+			float time = (float)Math.abs(Math.sin(glfwGetTime()));
 			shader.setFloat("transparency", time, time, time, time);
+			
+			// transforms
+			Matrix4f trans = new Matrix4f();
+			float[] a = new float[16];
+			trans.rotate((float)glfwGetTime(), 0.0f, 1.0f, 1.0f);
+			trans.scale(0.75f);
+			shader.setMatrix("transform", trans.get(a));
 			
 			// texture
 			texture.use();
