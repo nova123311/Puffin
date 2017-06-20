@@ -26,20 +26,55 @@ public class Main {
 		createCapabilities();
 		glViewport(0, 0, 800, 600);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glEnable(GL_DEPTH_TEST);
 		
 		// create shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
 		
-		// triangle vertex data
-		float[] vertices = {
-				-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-				-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-				0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-				0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f
-		};
+		// cube vertex data
+		float vertices[] = {
+				
+				// face 1
+			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    
+			    // face 2
+			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    
+			    // face 3
+			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    
+			    // face 4
+			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f
+			};
 		int[] indices = {
+				
+				// face1
 				0, 1, 2,
-				0, 2, 3
+				0, 2, 3,
+				
+				// face2
+				4, 5, 6,
+				4, 6, 7,
+				
+				// face 3
+				8, 9, 10,
+				8, 10, 11,
+				
+				// face 4
+				12, 13, 14,
+				12, 14, 15
 		};
 		
 		// create mesh to draw
@@ -65,11 +100,16 @@ public class Main {
 			shader.setFloat("transparency", time, time, time, time);
 			
 			// transforms
-			Matrix4f trans = new Matrix4f();
+			Matrix4f model = new Matrix4f();
+			model.rotate((float)glfwGetTime(), 0.5f, 1.0f, 0.0f);
+			Matrix4f view = new Matrix4f();
+			view.translate(0.0f, 0.0f, -5.0f);
+			Matrix4f projection = new Matrix4f();
+			projection.perspective((float)Math.toRadians(45.0f), (float)(800.0 / 600.0), 0.1f, 100.0f);
 			float[] a = new float[16];
-			trans.rotate((float)glfwGetTime(), 0.0f, 1.0f, 1.0f);
-			trans.scale(0.75f);
-			shader.setMatrix("transform", trans.get(a));
+			shader.setMatrix("model", model.get(a));
+			shader.setMatrix("view", view.get(a));
+			shader.setMatrix("projection", projection.get(a));
 			
 			// texture
 			texture.use();
@@ -79,7 +119,7 @@ public class Main {
 			
 			// refresh display
 			glfwSwapBuffers(window.getWindow());
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 		
 		// terminate glfw after successful execution
