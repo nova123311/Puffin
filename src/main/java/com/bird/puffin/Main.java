@@ -25,7 +25,7 @@ public class Main {
 		// initialize GL context
 		createCapabilities();
 		glViewport(0, 0, 800, 600);
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(1.0f, 0.71f, 0.76f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		
 		// create shader
@@ -56,7 +56,19 @@ public class Main {
 			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f
+			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    
+			    // face 5
+			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    
+			    // face 6
+			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f
 			};
 		int[] indices = {
 				
@@ -74,7 +86,15 @@ public class Main {
 				
 				// face 4
 				12, 13, 14,
-				12, 14, 15
+				12, 14, 15,
+				
+				// face 5
+				16, 17, 18,
+				16, 18, 19,
+				
+				// face 6
+				20, 21, 22,
+				20, 22, 23
 		};
 		
 		// create mesh to draw
@@ -82,7 +102,7 @@ public class Main {
 		
 		// create texture
 		Texture texture = new Texture();
-		texture.load("src/main/resources/container.jpg");
+		texture.load("src/main/resources/grill.jpg");
 		texture.load("src/main/resources/anime.png");
 		
 		// main game loop
@@ -96,12 +116,12 @@ public class Main {
 			shader.use();
 			shader.setInt("ourTexture1", 0);
 			shader.setInt("ourTexture2", 1);
-			float time = (float)Math.abs(Math.sin(glfwGetTime()));
+			float time = (float)Math.abs(Math.sin(0.5 * glfwGetTime()));
 			shader.setFloat("transparency", time, time, time, time);
 			
 			// transforms
 			Matrix4f model = new Matrix4f();
-			model.rotate((float)glfwGetTime(), 0.5f, 1.0f, 0.0f);
+			model.rotate((float)glfwGetTime(), 0.45f, 0.89f, 0.0f);
 			Matrix4f view = new Matrix4f();
 			view.translate(0.0f, 0.0f, -5.0f);
 			Matrix4f projection = new Matrix4f();
