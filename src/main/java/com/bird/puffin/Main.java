@@ -97,6 +97,20 @@ public class Main {
 				20, 22, 23
 		};
 		
+		// box locations
+		float[] position = {
+				0.0f, 0.0f, 0.0f,
+				2.0f, 5.0f, -15.0f,
+				-1.5f, -2.2f, -2.5f,
+				-3.8f, -2.0f, -12.3f,
+				2.4f, -0.4f, -3.5f,
+				-1.7f, 3.0f, -7.5f,
+				1.3f, -2.0f, -2.5f,
+				1.5f, 2.0f, -2.5f,
+				1.5f, 0.2f, -1.5f,
+				-1.3f, 1.0f, -1.5f
+		};
+		
 		// create mesh to draw
 		Mesh mesh = new Mesh(vertices, indices);
 		
@@ -120,14 +134,11 @@ public class Main {
 			shader.setFloat("transparency", time, time, time, time);
 			
 			// transforms
-			Matrix4f model = new Matrix4f();
-			model.rotate((float)glfwGetTime(), 0.45f, 0.89f, 0.0f);
 			Matrix4f view = new Matrix4f();
-			view.translate(0.0f, 0.0f, -5.0f);
+			view.translate(0.0f, 0.0f, -3.0f);
 			Matrix4f projection = new Matrix4f();
 			projection.perspective((float)Math.toRadians(45.0f), (float)(800.0 / 600.0), 0.1f, 100.0f);
 			float[] a = new float[16];
-			shader.setMatrix("model", model.get(a));
 			shader.setMatrix("view", view.get(a));
 			shader.setMatrix("projection", projection.get(a));
 			
@@ -135,7 +146,14 @@ public class Main {
 			texture.use();
 			
 			// render
-			mesh.render();
+			for (int i = 0; i < position.length / 3; ++i) {
+				Matrix4f model = new Matrix4f();
+				model.translate(position[i * 3 + 0], position[i * 3 + 1], position[i * 3 + 2]);
+				model.rotate((float)Math.toRadians(20.0f * i), 0.45f, 0.89f, 0.0f);
+				model.rotate((float)glfwGetTime(), 0.45f, 0.89f, 0.0f);
+				shader.setMatrix("model", model.get(a));
+				mesh.render();
+			}
 			
 			// refresh display
 			glfwSwapBuffers(window.getWindow());
