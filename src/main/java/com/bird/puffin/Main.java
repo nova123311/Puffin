@@ -8,6 +8,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL.*;
 
 public class Main {
+	static float deltaTime = 0.0f;
+	static float lastFrame = 0.0f;
 
 	public static void main(String[] args) {
 		
@@ -27,6 +29,9 @@ public class Main {
 		glViewport(0, 0, 800, 600);
 		glClearColor(1.0f, 0.71f, 0.76f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
+		
+		// camera
+		Camera camera = new Camera(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f);
 		
 		// create shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
@@ -121,10 +126,13 @@ public class Main {
 		
 		// main game loop
 		while (!glfwWindowShouldClose(window.getWindow())) {
+			float currentFrame = (float)glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
 			
 			// take inputs
 			glfwPollEvents();
-			processInput(window.getWindow());
+			processInput(window.getWindow(), camera);
 			
 			// shader attributes
 			shader.use();
@@ -134,10 +142,8 @@ public class Main {
 			shader.setFloat("transparency", time, time, time, time);
 			
 			// transforms
-			Matrix4f view = new Matrix4f();
-			view.translate(0.0f, 0.0f, -3.0f);
-			Matrix4f projection = new Matrix4f();
-			projection.perspective((float)Math.toRadians(45.0f), (float)(800.0 / 600.0), 0.1f, 100.0f);
+			Matrix4f view = camera.getViewMatrix();
+			Matrix4f projection = new Matrix4f().perspective(0.79f, 1.33f, 0.1f, 100.0f);
 			float[] a = new float[16];
 			shader.setMatrix("view", view.get(a));
 			shader.setMatrix("projection", projection.get(a));
@@ -147,10 +153,9 @@ public class Main {
 			
 			// render
 			for (int i = 0; i < position.length / 3; ++i) {
-				Matrix4f model = new Matrix4f();
-				model.translate(position[i * 3 + 0], position[i * 3 + 1], position[i * 3 + 2]);
-				model.rotate((float)Math.toRadians(20.0f * i), 0.45f, 0.89f, 0.0f);
-				model.rotate((float)glfwGetTime(), 0.45f, 0.89f, 0.0f);
+				Matrix4f model = new Matrix4f().translate(position[i * 3 + 0], position[i * 3 + 1], position[i * 3 + 2])
+						.rotate((float)Math.toRadians(20.0f * i), 0.45f, 0.89f, 0.0f)
+						.rotate((float)glfwGetTime(), 0.45f, 0.89f, 0.0f);
 				shader.setMatrix("model", model.get(a));
 				mesh.render();
 			}
@@ -164,8 +169,18 @@ public class Main {
 		glfwTerminate();
 	}
 	
-	private static void processInput(long window) {
+	private static void processInput(long window, Camera camera) {
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
+		
+		float speed = 5f * deltaTime;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			camera.translate(0.0f, 0.0f, -1.0f * speed);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			camera.translate(0.0f, 0.0f, 1.0f * speed);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			camera.translate(-1.0f * speed, 0.0f, 0.0f);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			camera.translate(1.0f * speed,  0.0f, 0.0f);
 	}
 }
