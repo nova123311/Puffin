@@ -7,10 +7,12 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL.*;
 
 public class Main {
+	static final int WIDTH = 1920;
+	static final int HEIGHT = 1080;
 	static float deltaTime = 0.0f;
 	static float lastFrame = 0.0f;
 	
-	static float lastX = 400, lastY = 300;
+	static float lastX = WIDTH / 2, lastY = HEIGHT / 2;
 
 	public static void main(String[] args) {
 		
@@ -22,20 +24,20 @@ public class Main {
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		
 		// create window
-		Window window = new Window("Puffin", 800, 600);
+		Window window = new Window("Puffin", WIDTH, HEIGHT);
 		glfwMakeContextCurrent(window.getWindow());
-		
+
 		// hide cursor
 		glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		
 		// initialize GL context
 		createCapabilities();
-		glViewport(0, 0, 800, 600);
+		glViewport(0, 0, WIDTH, HEIGHT);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		
 		// camera
-		Camera camera = new Camera();
+		Camera camera = new Camera(0.0f, 0.0f, 3.0f, 0.05f, 0.0f);
 		
 		// create shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
@@ -110,9 +112,7 @@ public class Main {
 		Mesh mesh = new Mesh(vertices, indices);
 		
 		// create texture
-		Texture texture = new Texture();
-		texture.load("src/main/resources/grill.jpg");
-		texture.load("src/main/resources/anime.png");
+		Texture texture = new Texture("src/main/resources/grill.jpg", "src/main/resources/anime.png");
 		
 		// main game loop
 		while (!glfwWindowShouldClose(window.getWindow())) {
@@ -132,7 +132,7 @@ public class Main {
 			// transforms
 			Matrix4f model = new Matrix4f();
 			Matrix4f view = camera.getViewMatrix();
-			Matrix4f projection = new Matrix4f().perspective(0.79f, 1.33f, 0.1f, 100.0f);
+			Matrix4f projection = new Matrix4f().perspective(0.79f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 			float[] a = new float[16];
 			shader.setFloatMatrix("model", model.get(a));
 			shader.setFloatMatrix("view", view.get(a));
@@ -159,14 +159,15 @@ public class Main {
 		
 		// moving around
 		float speed = 5f * deltaTime;
+		camera.setSpeed(speed);
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			camera.translate(Camera.Direction.FRONT, speed);
+			camera.translate(Camera.Direction.FRONT);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			camera.translate(Camera.Direction.BACK, speed);
+			camera.translate(Camera.Direction.BACK);
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			camera.translate(Camera.Direction.LEFT, speed);
+			camera.translate(Camera.Direction.LEFT);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			camera.translate(Camera.Direction.RIGHT, speed);
+			camera.translate(Camera.Direction.RIGHT);
 		
 		// looking around
 		double[] xpos = new double[1];

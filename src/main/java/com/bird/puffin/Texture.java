@@ -11,9 +11,11 @@ public class Texture {
 	private int[] texture;
 	private int current;
 
-	public Texture() {
+	public Texture(String... texturePaths) {
 		texture = new int[16];
 		current = 0;
+		for (String path : texturePaths)
+			load(path);
 	}
 	
 	public void use() {
