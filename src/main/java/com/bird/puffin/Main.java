@@ -31,7 +31,7 @@ public class Main {
 		// initialize GL context
 		createCapabilities();
 		glViewport(0, 0, 800, 600);
-		glClearColor(1.0f, 0.71f, 0.76f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		
 		// camera
@@ -134,9 +134,9 @@ public class Main {
 			Matrix4f view = camera.getViewMatrix();
 			Matrix4f projection = new Matrix4f().perspective(0.79f, 1.33f, 0.1f, 100.0f);
 			float[] a = new float[16];
-			shader.setMatrix("model", model.get(a));
-			shader.setMatrix("view", view.get(a));
-			shader.setMatrix("projection", projection.get(a));
+			shader.setFloatMatrix("model", model.get(a));
+			shader.setFloatMatrix("view", view.get(a));
+			shader.setFloatMatrix("projection", projection.get(a));
 			
 			// texture
 			texture.use();
