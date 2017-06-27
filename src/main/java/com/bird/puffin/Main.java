@@ -1,6 +1,5 @@
 package com.bird.puffin;
 
-import org.joml.Math;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -10,6 +9,8 @@ import static org.lwjgl.opengl.GL.*;
 public class Main {
 	static float deltaTime = 0.0f;
 	static float lastFrame = 0.0f;
+	
+	static float lastX = 400, lastY = 300;
 
 	public static void main(String[] args) {
 		
@@ -24,6 +25,9 @@ public class Main {
 		Window window = new Window("Puffin", 800, 600);
 		glfwMakeContextCurrent(window.getWindow());
 		
+		// hide cursor
+		glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		
 		// initialize GL context
 		createCapabilities();
 		glViewport(0, 0, 800, 600);
@@ -31,7 +35,7 @@ public class Main {
 		glEnable(GL_DEPTH_TEST);
 		
 		// camera
-		Camera camera = new Camera(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f);
+		Camera camera = new Camera();
 		
 		// create shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
@@ -102,20 +106,6 @@ public class Main {
 				20, 22, 23
 		};
 		
-		// box locations
-		float[] position = {
-				0.0f, 0.0f, 0.0f,
-				2.0f, 5.0f, -15.0f,
-				-1.5f, -2.2f, -2.5f,
-				-3.8f, -2.0f, -12.3f,
-				2.4f, -0.4f, -3.5f,
-				-1.7f, 3.0f, -7.5f,
-				1.3f, -2.0f, -2.5f,
-				1.5f, 2.0f, -2.5f,
-				1.5f, 0.2f, -1.5f,
-				-1.3f, 1.0f, -1.5f
-		};
-		
 		// create mesh to draw
 		Mesh mesh = new Mesh(vertices, indices);
 		
@@ -138,13 +128,13 @@ public class Main {
 			shader.use();
 			shader.setInt("ourTexture1", 0);
 			shader.setInt("ourTexture2", 1);
-			float time = (float)Math.abs(Math.sin(0.5 * glfwGetTime()));
-			shader.setFloat("transparency", time, time, time, time);
 			
 			// transforms
+			Matrix4f model = new Matrix4f();
 			Matrix4f view = camera.getViewMatrix();
 			Matrix4f projection = new Matrix4f().perspective(0.79f, 1.33f, 0.1f, 100.0f);
 			float[] a = new float[16];
+			shader.setMatrix("model", model.get(a));
 			shader.setMatrix("view", view.get(a));
 			shader.setMatrix("projection", projection.get(a));
 			
@@ -152,13 +142,7 @@ public class Main {
 			texture.use();
 			
 			// render
-			for (int i = 0; i < position.length / 3; ++i) {
-				Matrix4f model = new Matrix4f().translate(position[i * 3 + 0], position[i * 3 + 1], position[i * 3 + 2])
-						.rotate((float)Math.toRadians(20.0f * i), 0.45f, 0.89f, 0.0f)
-						.rotate((float)glfwGetTime(), 0.45f, 0.89f, 0.0f);
-				shader.setMatrix("model", model.get(a));
-				mesh.render();
-			}
+			mesh.render();
 			
 			// refresh display
 			glfwSwapBuffers(window.getWindow());
@@ -173,14 +157,25 @@ public class Main {
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 		
+		// moving around
 		float speed = 5f * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			camera.translate(0.0f, 0.0f, -1.0f * speed);
+			camera.translate(Camera.Direction.FRONT, speed);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			camera.translate(0.0f, 0.0f, 1.0f * speed);
+			camera.translate(Camera.Direction.BACK, speed);
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			camera.translate(-1.0f * speed, 0.0f, 0.0f);
+			camera.translate(Camera.Direction.LEFT, speed);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			camera.translate(1.0f * speed,  0.0f, 0.0f);
+			camera.translate(Camera.Direction.RIGHT, speed);
+		
+		// looking around
+		double[] xpos = new double[1];
+		double[] ypos = new double[1];
+		glfwGetCursorPos(window, xpos, ypos);
+		float xOffset = (float)(xpos[0] - lastX);
+		float yOffset = (float)(lastY - ypos[0]);
+		lastX = (float)xpos[0];
+		lastY = (float)ypos[0];
+		camera.look(xOffset, yOffset);
 	}
 }
