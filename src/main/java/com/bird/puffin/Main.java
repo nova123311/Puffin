@@ -42,11 +42,11 @@ public class Main {
 		
 		// cube to draw and shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
-		Model cube = new Model("src/main/resources/cube.obj");
+		Model cube = new Model("src/main/resources/dragon/dragon.obj");
 		
 		// light to draw and shader
 		Shader lightShader = new Shader("src/main/resources/lightshader.vs", "src/main/resources/lightshader.frag");
-		Model light = new Model("src/main/resources/cube.obj");
+		Model light = new Model("src/main/resources/cube/cube.obj");
 		Vector3f lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
 		
 		// main game loop
@@ -65,7 +65,7 @@ public class Main {
 			shader.use();
 			Matrix4f model = new Matrix4f();
 			Matrix4f view = camera.getViewMatrix();
-			Matrix4f projection = new Matrix4f().perspective(0.79f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+			Matrix4f projection = new Matrix4f().perspective(0.79f, (float)WIDTH / (float)HEIGHT, 0.01f, 100.0f);
 			shader.setFloatMatrix("model", model.get(a));
 			shader.setFloatMatrix("view", view.get(a));
 			shader.setFloatMatrix("projection", projection.get(a));

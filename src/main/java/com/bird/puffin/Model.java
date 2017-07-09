@@ -15,7 +15,7 @@ public class Model {
 
 	public Model(String path) {
 		meshes = new ArrayList<Mesh>();
-		AIScene aiScene = aiImportFile(path, aiProcess_Triangulate);
+		AIScene aiScene = aiImportFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
 		processScene(aiScene);
 	}
 	
@@ -53,9 +53,14 @@ public class Model {
 			vertexData.add(normal.z());
 			
 			// texture coordinate data
-			AIVector3D texture = textureBuffer.get(i);
-			vertexData.add(texture.x());
-			vertexData.add(texture.y());
+			if (textureBuffer != null) {
+				AIVector3D texture = textureBuffer.get(i);
+				vertexData.add(texture.x());
+				vertexData.add(texture.y());
+			} else {
+				vertexData.add(0f);
+				vertexData.add(0f);
+			}
 		}
 		
 		ArrayList<Integer> indexData = new ArrayList<Integer>();
