@@ -87,6 +87,14 @@ public class Camera {
 	}
 	
 	/**
+	 * Obtain the position of the camera as a vector of 3 components (floats)
+	 * @return the position of the camera
+	 */ 
+	public Vector3f getPosition() {
+		return position;
+	}
+	
+	/**
 	 * Adjust speed of the camera
 	 * @param speed to set camera to
 	 */

@@ -1,6 +1,7 @@
 package com.bird.puffin;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -39,47 +40,44 @@ public class Main {
 		// camera
 		Camera camera = new Camera(0.0f, 0.0f, 3.0f, 0.05f, 0.0f);
 		
-		// create shader
-		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
-		
 		// cube vertex data
 		float vertices[] = {
 				
 				// face 1
-			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
 			    
 			    // face 2
-			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 			    
 			    // face 3
-			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
 			    
 			    // face 4
-			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			    0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			    0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			    0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 			    
 			    // face 5
-			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+			    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			    0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+			    0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 			    
 			    // face 6
-			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f
+			    -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			    -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+			    0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+			    0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f
 			};
 		int[] indices = {
 				
@@ -108,11 +106,14 @@ public class Main {
 				20, 22, 23
 		};
 		
-		// create mesh to draw
-		Mesh mesh = new Mesh(vertices, indices);
+		// cube to draw and shader
+		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
+		Mesh cube = new Mesh(vertices, indices);
 		
-		// create texture
-		Texture texture = new Texture("src/main/resources/grill.jpg", "src/main/resources/anime.png");
+		// light to draw and shader
+		Shader lightShader = new Shader("src/main/resources/lightshader.vs", "src/main/resources/lightshader.frag");
+		Mesh light = new Mesh(vertices, indices);
+		Vector3f lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
 		
 		// main game loop
 		while (!glfwWindowShouldClose(window.getWindow())) {
@@ -124,25 +125,32 @@ public class Main {
 			glfwPollEvents();
 			processInput(window.getWindow(), camera);
 			
-			// shader attributes
-			shader.use();
-			shader.setInt("ourTexture1", 0);
-			shader.setInt("ourTexture2", 1);
+			float[] a = new float[16];
 			
-			// transforms
+			// draw cube
+			shader.use();
 			Matrix4f model = new Matrix4f();
 			Matrix4f view = camera.getViewMatrix();
 			Matrix4f projection = new Matrix4f().perspective(0.79f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-			float[] a = new float[16];
 			shader.setFloatMatrix("model", model.get(a));
 			shader.setFloatMatrix("view", view.get(a));
 			shader.setFloatMatrix("projection", projection.get(a));
+			shader.setFloat("objectColor", 1.0f, 0.5f, 0.31f);
+			shader.setFloat("lightColor", 1.0f, 1.0f, 1.0f);
+			shader.setFloat("lightPos", lightPos.x, lightPos.y, lightPos.z);
+			Vector3f position = camera.getPosition();
+			shader.setFloat("cameraPos", position.x, position.y, position.z);
+			cube.render();
 			
-			// texture
-			texture.use();
-			
-			// render
-			mesh.render();
+			// draw light
+			lightShader.use();
+			model.identity();
+			model.translate(lightPos);
+			model.scale(0.2f);
+			lightShader.setFloatMatrix("model", model.get(a));
+			lightShader.setFloatMatrix("view", view.get(a));
+			lightShader.setFloatMatrix("projection", projection.get(a));
+			light.render();
 			
 			// refresh display
 			glfwSwapBuffers(window.getWindow());
