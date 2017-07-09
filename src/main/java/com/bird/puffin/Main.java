@@ -40,79 +40,13 @@ public class Main {
 		// camera
 		Camera camera = new Camera(0.0f, 0.0f, 3.0f, 0.05f, 0.0f);
 		
-		// cube vertex data
-		float vertices[] = {
-				
-				// face 1
-			    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-			    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-			    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-			    
-			    // face 2
-			    -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			    
-			    // face 3
-			    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-			    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-			    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-			    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-			    
-			    // face 4
-			    0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			    0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			    0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			    
-			    // face 5
-			    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-			    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			    0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-			    
-			    // face 6
-			    -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-			    -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-			    0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-			    0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f
-			};
-		int[] indices = {
-				
-				// face1
-				0, 1, 2,
-				0, 2, 3,
-				
-				// face2
-				4, 5, 6,
-				4, 6, 7,
-				
-				// face 3
-				8, 9, 10,
-				8, 10, 11,
-				
-				// face 4
-				12, 13, 14,
-				12, 14, 15,
-				
-				// face 5
-				16, 17, 18,
-				16, 18, 19,
-				
-				// face 6
-				20, 21, 22,
-				20, 22, 23
-		};
-		
 		// cube to draw and shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
-		Mesh cube = new Mesh(vertices, indices);
+		Model cube = new Model("src/main/resources/cube.obj");
 		
 		// light to draw and shader
 		Shader lightShader = new Shader("src/main/resources/lightshader.vs", "src/main/resources/lightshader.frag");
-		Mesh light = new Mesh(vertices, indices);
+		Model light = new Model("src/main/resources/cube.obj");
 		Vector3f lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
 		
 		// main game loop

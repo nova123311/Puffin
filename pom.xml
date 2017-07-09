@@ -38,6 +38,11 @@
 		<version>${lwjgl.version}</version>
 	</dependency>
 	<dependency>
+		<groupId>org.lwjgl</groupId>
+		<artifactId>lwjgl-assimp</artifactId>
+		<version>${lwjgl.version}</version>
+	</dependency>
+	<dependency>
 		<groupId>org.joml</groupId>
 		<artifactId>joml</artifactId>
 		<version>${joml.version}</version>
