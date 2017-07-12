@@ -42,7 +42,7 @@ public class Main {
 		
 		// cube to draw and shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
-		Model cube = new Model("src/main/resources/dragon/dragon.obj");
+		Model cube = new Model("src/main/resources/car/sportsCar.obj");
 		
 		// light to draw and shader
 		Shader lightShader = new Shader("src/main/resources/lightshader.vs", "src/main/resources/lightshader.frag");
@@ -69,22 +69,21 @@ public class Main {
 			shader.setFloatMatrix("model", model.get(a));
 			shader.setFloatMatrix("view", view.get(a));
 			shader.setFloatMatrix("projection", projection.get(a));
-			shader.setFloat("objectColor", 1.0f, 0.5f, 0.31f);
-			shader.setFloat("lightColor", 1.0f, 1.0f, 1.0f);
-			shader.setFloat("lightPos", lightPos.x, lightPos.y, lightPos.z);
 			Vector3f position = camera.getPosition();
 			shader.setFloat("cameraPos", position.x, position.y, position.z);
-			cube.render();
+			shader.setFloat("light.ambient", 1.0f, 1.0f, 1.0f);
+			shader.setFloat("light.diffuse", 1.0f, 1.0f, 1.0f);
+			shader.setFloat("light.specular", 1.0f, 1.0f, 1.0f);
+			shader.setFloat("light.position", lightPos.x, lightPos.y, lightPos.z);
+			cube.render(shader);
 			
 			// draw light
 			lightShader.use();
-			model.identity();
-			model.translate(lightPos);
-			model.scale(0.2f);
+			model.identity().translate(lightPos).scale(0.2f);
 			lightShader.setFloatMatrix("model", model.get(a));
 			lightShader.setFloatMatrix("view", view.get(a));
 			lightShader.setFloatMatrix("projection", projection.get(a));
-			light.render();
+			light.render(lightShader);
 			
 			// refresh display
 			glfwSwapBuffers(window.getWindow());

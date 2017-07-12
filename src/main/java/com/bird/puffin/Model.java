@@ -2,7 +2,10 @@ package com.bird.puffin;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+
+import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
+import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
@@ -12,16 +15,37 @@ import static org.lwjgl.assimp.Assimp.*;
 
 public class Model {
 	private ArrayList<Mesh> meshes;
+	private ArrayList<Material> materials;
 
 	public Model(String path) {
 		meshes = new ArrayList<Mesh>();
+		materials = new ArrayList<Material>();
 		AIScene aiScene = aiImportFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
+		createMaterials(aiScene);
 		processScene(aiScene);
 	}
 	
-	public void render() {
+	public void render(Shader shader) {
 		for (Mesh mesh : meshes) {
-			mesh.render();
+			mesh.render(shader);
+		}
+	}
+	
+	private void createMaterials(AIScene aiScene) {
+		
+		// material (ambient, diffuse, specular) data
+		PointerBuffer materialBuffer = aiScene.mMaterials();
+		while (materialBuffer.hasRemaining()) {
+			AIMaterial aiMaterial = AIMaterial.create(materialBuffer.get());
+			AIColor4D ambient = AIColor4D.create();
+			AIColor4D diffuse = AIColor4D.create();
+			AIColor4D specular = AIColor4D.create();
+			AIColor4D shininess = AIColor4D.create();
+			aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_AMBIENT, aiTextureType_NONE, 0, ambient);
+			aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, aiTextureType_NONE, 0, diffuse);
+			aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_SPECULAR, aiTextureType_NONE, 0, specular);
+			aiGetMaterialColor(aiMaterial, AI_MATKEY_SHININESS, aiTextureType_NONE, 0, shininess);
+			materials.add(new Material(ambient, diffuse, specular, shininess.r()));
 		}
 	}
 	
@@ -82,6 +106,6 @@ public class Model {
 			indices[i] = indexData.get(i);
 		}
 		
-		return new Mesh(vertices, indices);
+		return new Mesh(vertices, indices, materials.get(mesh.mMaterialIndex()));
 	}
 }
