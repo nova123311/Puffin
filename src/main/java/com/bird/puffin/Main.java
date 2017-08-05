@@ -8,12 +8,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL.*;
 
 public class Main {
-	static final int WIDTH = 1920;
-	static final int HEIGHT = 1080;
-	static float deltaTime = 0.0f;
-	static float lastFrame = 0.0f;
-	
-	static float lastX = WIDTH / 2, lastY = HEIGHT / 2;
+	private static final int WIDTH = 1920;
+	private static final int HEIGHT = 1080;
 
 	public static void main(String[] args) {
 		
@@ -26,10 +22,9 @@ public class Main {
 		
 		// create window
 		Window window = new Window("Puffin", WIDTH, HEIGHT);
-		glfwMakeContextCurrent(window.getWindow());
 
 		// hide cursor
-		glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		window.setCursorVisible(false);
 		
 		// initialize GL context
 		createCapabilities();
@@ -40,9 +35,12 @@ public class Main {
 		// camera
 		Camera camera = new Camera(0.0f, 0.0f, 3.0f, 0.05f, 0.0f);
 		
-		// cube to draw and shader
+		// controller for managing user input
+		Controller controller = new Controller(window, camera);
+		
+		// model to draw and shader
 		Shader shader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
-		Model cube = new Model("src/main/resources/suit/", "nanosuit.obj");
+		Model object = new Model("src/main/resources/suit/", "nanosuit.obj");
 		
 		// light to draw and shader
 		Shader lightShader = new Shader("src/main/resources/lightshader.vs", "src/main/resources/lightshader.frag");
@@ -51,22 +49,19 @@ public class Main {
 				(float)(2.33 * Math.cos(glfwGetTime())));
 		
 		// main game loop
-		while (!glfwWindowShouldClose(window.getWindow())) {
-			float currentFrame = (float)glfwGetTime();
-			deltaTime = currentFrame - lastFrame;
-			lastFrame = currentFrame;
+		float[] a = new float[16];
+		Matrix4f projection = new Matrix4f().perspective(0.79f, (float)WIDTH / (float)HEIGHT, 0.01f, 100.0f);
+		while (!window.shouldClose()) {
 			
 			// take inputs
 			glfwPollEvents();
-			processInput(window.getWindow(), camera);
+			controller.processKeyboardInput();
+			controller.processMouseInput();
 			
-			float[] a = new float[16];
-			
-			// draw cube
+			// draw model
 			shader.use();
-			Matrix4f model = new Matrix4f().scale(0.1f);
+			Matrix4f model = new Matrix4f().scale(0.2f);
 			Matrix4f view = camera.getViewMatrix();
-			Matrix4f projection = new Matrix4f().perspective(0.79f, (float)WIDTH / (float)HEIGHT, 0.01f, 100.0f);
 			shader.setFloatMatrix("model", model.get(a));
 			shader.setFloatMatrix("view", view.get(a));
 			shader.setFloatMatrix("projection", projection.get(a));
@@ -76,7 +71,7 @@ public class Main {
 			shader.setFloat("light.diffuse", 1.0f, 1.0f, 1.0f);
 			shader.setFloat("light.specular", 1.0f, 1.0f, 1.0f);
 			shader.setFloat("light.position", lightPos.x, lightPos.y, lightPos.z);
-			cube.render(shader);
+			object.render(shader);
 			
 			// draw light
 			lightShader.use();
@@ -95,32 +90,5 @@ public class Main {
 		
 		// terminate glfw after successful execution
 		glfwTerminate();
-	}
-	
-	private static void processInput(long window, Camera camera) {
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			glfwSetWindowShouldClose(window, true);
-		
-		// moving around
-		float speed = 5f * deltaTime;
-		camera.setSpeed(speed);
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			camera.translate(Camera.Direction.FRONT);
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			camera.translate(Camera.Direction.BACK);
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			camera.translate(Camera.Direction.LEFT);
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			camera.translate(Camera.Direction.RIGHT);
-		
-		// looking around
-		double[] xpos = new double[1];
-		double[] ypos = new double[1];
-		glfwGetCursorPos(window, xpos, ypos);
-		float xOffset = (float)(xpos[0] - lastX);
-		float yOffset = (float)(lastY - ypos[0]);
-		lastX = (float)xpos[0];
-		lastY = (float)ypos[0];
-		camera.look(xOffset, yOffset);
 	}
 }

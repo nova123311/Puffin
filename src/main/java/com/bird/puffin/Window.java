@@ -17,6 +17,19 @@ public class Window {
 	 */
 	public Window(String title, int width, int height) {
 		window = glfwCreateWindow(width, height, title, 0, 0);
+		glfwMakeContextCurrent(window);
+	}
+	
+	public void setCursorVisible(boolean visible) {
+		glfwSetInputMode(window, GLFW_CURSOR, visible == true ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+	}
+	
+	public boolean shouldClose() {
+		return glfwWindowShouldClose(window);
+	}
+	
+	public void setShouldClose(boolean shouldClose) {
+		glfwSetWindowShouldClose(window, shouldClose);
 	}
 	
 	/**
