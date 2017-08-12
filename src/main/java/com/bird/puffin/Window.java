@@ -10,7 +10,7 @@ public class Window {
 	private long window;
 
 	/**
-	 * 
+	 * Create a glfw window using parameters specified by the user
 	 * @param title of the window to display on the top bar
 	 * @param width of the window
  	 * @param height of the window
@@ -18,10 +18,7 @@ public class Window {
 	public Window(String title, int width, int height) {
 		window = glfwCreateWindow(width, height, title, 0, 0);
 		glfwMakeContextCurrent(window);
-	}
-	
-	public void setCursorVisible(boolean visible) {
-		glfwSetInputMode(window, GLFW_CURSOR, visible == true ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 	
 	public boolean shouldClose() {

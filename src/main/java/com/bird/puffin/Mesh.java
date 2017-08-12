@@ -8,9 +8,14 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+/**
+ * Class for creating a single mesh and its properties
+ * @author Francis
+ */
 public class Mesh {
 	private int EBO, VBO, VAO;
 	private int[] indices;
+	private Vertex[] vertices;
 	private Material material;
 	private Texture diffuseTexture;
 	private Texture specularTexture;
@@ -18,39 +23,11 @@ public class Mesh {
 	public Mesh(Vertex[] vertices, int[] indices, Material material, Texture diffuseTexture, Texture specularTexture) {
 		this.indices = indices;
 		this.material = material;
+		this.vertices = vertices;
 		this.diffuseTexture = diffuseTexture;
 		this.specularTexture = specularTexture;
 		
-		// generate EBO, VBO, and VAO for indexed drawing
-		EBO = glGenBuffers();
-		VBO = glGenBuffers();
-		VAO = glGenVertexArrays();
-		
-		// bind VBO and EBO to VAO
-		glBindVertexArray(VAO);
-		
-		// bind vertex data
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, genVertices(vertices), GL_STATIC_DRAW);
-		
-		// bind index data
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-		
-		// vertex position
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);
-		glEnableVertexAttribArray(0);
-		
-		// vertex normal
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 32, 12);
-		glEnableVertexAttribArray(1);
-		
-		// vertex texture coordinate
-		glVertexAttribPointer(2, 2, GL_FLOAT, false, 32, 24);
-		glEnableVertexAttribArray(2);
-		
-		// unbind the VAO
-		glBindVertexArray(0);
+		setupMesh();
 	}
 	
 	public void render(Shader shader) {
@@ -84,5 +61,43 @@ public class Mesh {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Setup the mesh for drawing by binding the element buffer object for 
+	 * indexed drawing, the vertex buffer object, and the vertex array object
+	 */
+	private void setupMesh() {
+		
+		// generate EBO, VBO, and VAO for indexed drawing
+		EBO = glGenBuffers();
+		VBO = glGenBuffers();
+		VAO = glGenVertexArrays();
+		
+		// bind VBO and EBO to VAO
+		glBindVertexArray(VAO);
+		
+		// bind vertex data
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, genVertices(vertices), GL_STATIC_DRAW);
+		
+		// bind index data
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+		
+		// vertex position
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);
+		glEnableVertexAttribArray(0);
+		
+		// vertex normal
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 32, 12);
+		glEnableVertexAttribArray(1);
+		
+		// vertex texture coordinate
+		glVertexAttribPointer(2, 2, GL_FLOAT, false, 32, 24);
+		glEnableVertexAttribArray(2);
+		
+		// unbind the VAO
+		glBindVertexArray(0);
 	}
 }

@@ -2,6 +2,10 @@ package com.bird.puffin;
 
 import org.lwjgl.assimp.AIVector3D;
 
+/**
+ * 
+ * @author Francis
+ */
 public class Vertex {
 	private float[] vertex;
 
