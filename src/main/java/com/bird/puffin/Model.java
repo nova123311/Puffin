@@ -1,5 +1,6 @@
 package com.bird.puffin;
 
+import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -17,21 +18,13 @@ import static org.lwjgl.assimp.Assimp.*;
 
 public class Model {
 	private String directory;
-	private ArrayList<Mesh> meshes;
-	private ArrayList<Material> materials;
-	private ArrayList<Texture> diffuseTextures;
-	private ArrayList<Texture> specularTextures;
-
-	public Model(String directory, String model) {
-		this.directory = directory;
-		meshes = new ArrayList<Mesh>();
-		materials = new ArrayList<Material>();
-		diffuseTextures = new ArrayList<Texture>();
-		specularTextures = new ArrayList<Texture>();
-		AIScene aiScene = aiImportFile(directory + model, aiProcess_Triangulate | aiProcess_GenSmoothNormals
-				| aiProcess_JoinIdenticalVertices | aiProcess_SplitLargeMeshes);
-		createMaterials(aiScene);
-		processScene(aiScene);
+	private ArrayList<Mesh> meshes = new ArrayList<Mesh>();
+	private ArrayList<Material> materials = new ArrayList<Material>();
+	private ArrayList<Texture> diffuseTextures = new ArrayList<Texture>();
+	private ArrayList<Texture> specularTextures = new ArrayList<Texture>();
+	
+	public Model(String path) {
+		loadModel(path);
 	}
 	
 	/**
@@ -46,8 +39,9 @@ public class Model {
 	
 	private void createMaterials(AIScene aiScene) {
 		
-		// material (ambient, diffuse, specular) data
+		// material (ambient, diffuse, specular, shininess) data
 		PointerBuffer materialBuffer = aiScene.mMaterials();
+		System.out.println("Textures: " + aiScene.mNumTextures());
 		while (materialBuffer.hasRemaining()) {
 			AIMaterial aiMaterial = AIMaterial.create(materialBuffer.get());
 			AIColor4D ambient = AIColor4D.create();
@@ -124,5 +118,21 @@ public class Model {
 			AIMesh mesh = AIMesh.create(buffer.get(i));
 			meshes.add(createMesh(mesh));
 		}
+	}
+	
+	/**
+	 * Load the model's data (meshes, materials, specular/diffuse textures)
+	 * @param path to the model to load
+	 */
+	private void loadModel(String path) {
+		
+		// load model into an AIScene structure
+		File file =  new File(path);
+		directory = file.getParent() + "\\";
+		AIScene aiScene = aiImportFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals
+				| aiProcess_JoinIdenticalVertices | aiProcess_SplitLargeMeshes);
+	
+		createMaterials(aiScene);
+		processScene(aiScene);
 	}
 }

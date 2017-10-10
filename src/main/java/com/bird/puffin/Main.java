@@ -10,18 +10,12 @@ import static org.lwjgl.opengl.GL.*;
 public class Main {
 	private static final int WIDTH = 1920;
 	private static final int HEIGHT = 1080;
+	private static final String TITLE = "Puffin";
 
 	public static void main(String[] args) {
 		
-		// initialize GLFW
-		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-		
 		// window
-		Window window = new Window("Puffin", WIDTH, HEIGHT);
+		Window window = new Window(TITLE, WIDTH, HEIGHT);
 		
 		// camera
 		Camera camera = new Camera(0.0f, 0.0f, 3.0f, 0.05f, 0.0f);
@@ -35,19 +29,14 @@ public class Main {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		
-		// terrain to render
-		Shader terrainShader = new Shader("src/main/resources/shader.vs", "src/main/resources/shader.frag");
-		Terrain terrain = new Terrain();
-		
-		// model to draw and shader
-		Shader shader = new Shader("src/main/resources/shaders/shader.vs", 
-				"src/main/resources/shaders/shader.frag");
-		Model object = new Model("src/main/resources/suit/", "nanosuit.obj");
+		// model to render
+		Shader shader = new Shader("src/main/resources/shaders/shader.vs", "src/main/resources/shaders/shader.frag");
+		Model object = new Model("src/main/resources/suit/nanosuit.obj");
 		
 		// create a point light
 		Shader lightShader = new Shader("src/main/resources/shaders/lightshader.vs", 
 				"src/main/resources/shaders/lightshader.frag");
-		Model light = new Model("src/main/resources/cube/", "cube.obj");	
+		Model light = new Model("src/main/resources/cube/cube.obj");
 		PointLight pointLight = new PointLight(new Vector3f(1.2f, 1.0f, 2.0f), 1.0f, 0.09f, 0.032f);
 		
 		// main rendering loop
@@ -56,22 +45,10 @@ public class Main {
 		while (!window.shouldClose()) {
 			
 			// take inputs
-			glfwPollEvents();
 			controller.processKeyboardInput();
-			controller.processMouseInput();
-			
-			// draw terrain
-			Matrix4f model = new Matrix4f();
-			Matrix4f view = camera.getViewMatrix();
-			terrainShader.use();
-			model.scale(0.1f);
-			terrainShader.setFloatMatrix("model", model.get(a));
-			terrainShader.setFloatMatrix("view", view.get(a));
-			terrainShader.setFloatMatrix("projection", projection.get(a));
-			terrain.render(terrainShader);
+			controller.processMouseInput();	
 			
 			// draw model
-			/*
 			shader.use();
 			Matrix4f model = new Matrix4f();
 			Matrix4f view = camera.getViewMatrix();
@@ -93,8 +70,7 @@ public class Main {
 					shader.setFloat("pointLights[" + j + "].position", position.x, position.y, position.z);
 				}
 				object.render(shader);
-			}
-			*/
+			}		
 			
 			// draw light
 			lightShader.use();
@@ -104,9 +80,8 @@ public class Main {
 			lightShader.setFloatMatrix("projection", projection.get(a));
 			light.render(lightShader);
 		
-			// refresh display
-			glfwSwapBuffers(window.getWindow());
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			// update display
+			window.update();
 		}
 		
 		// terminate glfw after successful execution

@@ -5,15 +5,21 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.IntBuffer;
+
+import javax.imageio.ImageIO;
 
 public class Terrain {
 	private int EBO, VBO, VAO;
 	private float vertices[];
 	private int indices[];
+	private int heightmap[];
 	private final int SIZE = 1024;
 	
-	public Terrain() {
+	public Terrain(String heightmapPath) {
 		vertices = new float[3 * (SIZE + 1) * (SIZE + 1)];
 		indices = new int[6 * SIZE * SIZE];
 		
@@ -52,7 +58,7 @@ public class Terrain {
 	public void render(Shader shader) {
 		shader.use();
 		glBindVertexArray(VAO);
-		glDrawElements(GL_LINE_STRIP, IntBuffer.wrap(indices));
+		glDrawElements(GL_TRIANGLES, IntBuffer.wrap(indices));
 		glBindVertexArray(0);
 	}
 	
@@ -78,7 +84,26 @@ public class Terrain {
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
 		glEnableVertexAttribArray(0);
 		
+		// normals
+		
 		// unbind the VAO
 		glBindVertexArray(0);
+	}
+
+	private void loadHeightMap(String path) {
+		
+		try {
+			File file = new File(path);
+			BufferedImage image = ImageIO.read(file);
+			heightmap = new int[image.getWidth() * image.getHeight()];
+			int currentIndex = 0;
+			for (int x = 0; x < image.getWidth(); ++x) {
+				for (int y = 0; y < image.getHeight(); ++y) {
+					heightmap[currentIndex++] = image.getRGB(x, y) & 0xFF;
+				}
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 }

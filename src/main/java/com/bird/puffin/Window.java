@@ -1,6 +1,7 @@
 package com.bird.puffin;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * This class allows the user to create and reference a GLFW window
@@ -16,9 +17,24 @@ public class Window {
  	 * @param height of the window
 	 */
 	public Window(String title, int width, int height) {
+		
+		// initialize GLFW
+		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		
+		// create window
 		window = glfwCreateWindow(width, height, title, 0, 0);
 		glfwMakeContextCurrent(window);
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+	
+	public void update() {
+		glfwPollEvents();
+		glfwSwapBuffers(window);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	
 	public boolean shouldClose() {

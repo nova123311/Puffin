@@ -2,6 +2,17 @@
 
 out vec4 color;
 
+uniform vec3 terrainColor;
+uniform vec3 lightColor;
+
 void main() {
-	color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+	// calculate ambient component
+	vec3 ambient = 0.1f * lightColor;
+	
+	// calculate diffuse component
+	
+	// resulting color is sum of ambient, diffuse, specular components
+	vec3 result = ambient * terrainColor;
+	color = vec4(result, 1.0f);
 }
